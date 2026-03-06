@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/Backend.Api.csproj" />
+  </Folder>
+  <Folder Name="/gateway/">
+    <Project Path="gateway/Gateway.Api.csproj" />
+  </Folder>
+</Solution>
