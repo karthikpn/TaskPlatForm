@@ -9,7 +9,7 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = "http://localhost:8080/realms/saas-platform";
+        options.Authority = "http://localhost:8080/realms/TaskPlatform";
         options.RequireHttpsMetadata = false;
         options.Audience = "gateway";
     });
@@ -26,7 +26,7 @@ app.UseAuthorization();
 
 app.UseMiddleware<Backend.Api.Middleware.UserProvisioningMiddleware>();
 
-app.MapGet("/api/health", () => "Hello from health");
+app.MapGet("/api/health", () => "Hello from health").RequireAuthorization();
 app.MapControllers();
 
 app.Run();

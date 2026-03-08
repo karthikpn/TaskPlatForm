@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>SaaS Task Platform</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <div class="max-w-3xl mx-auto mt-10">
+
+        <h1 class="text-3xl font-bold mb-6">SaaS Task Platform</h1>
+
+        <div class="bg-white p-4 rounded shadow mb-6">
+            <button onclick="getMe()" class="bg-blue-500 text-white px-4 py-2 rounded">
+                Who Am I
+            </button>
+        </div>
+
+        <div class="bg-white p-4 rounded shadow mb-6">
+            <h2 class="font-bold mb-2">Create Project</h2>
+
+            <input id="projectName"
+                   placeholder="Project name"
+                   class="border p-2 w-full mb-2" />
+
+            <button onclick="createProject()"
+                    class="bg-green-500 text-white px-4 py-2 rounded">
+                Create
+            </button>
+        </div>
+
+        <div class="bg-white p-4 rounded shadow mb-6">
+            <h2 class="font-bold mb-2">Create Task</h2>
+
+            <input id="taskProjectId"
+                   placeholder="Project Id"
+                   class="border p-2 w-full mb-2" />
+
+            <input id="taskTitle"
+                   placeholder="Task title"
+                   class="border p-2 w-full mb-2" />
+
+            <button onclick="createTask()"
+                    class="bg-green-500 text-white px-4 py-2 rounded">
+                Create Task
+            </button>
+        </div>
+
+        <div class="bg-white p-4 rounded shadow mb-6">
+            <h2 class="font-bold mb-2">Get Tasks</h2>
+
+            <input id="tasksProjectId"
+                   placeholder="Project Id"
+                   class="border p-2 w-full mb-2" />
+
+            <button onclick="getTasks()"
+                    class="bg-blue-500 text-white px-4 py-2 rounded">
+                Fetch Tasks
+            </button>
+        </div>
+
+        <pre id="output"
+             class="bg-black text-green-400 p-4 rounded overflow-auto"></pre>
+
+    </div>
+
+    <script>
+
+const api = "https://localhost:7074"; // gateway
+
+function show(data) {
+  document.getElementById("output").textContent =
+    JSON.stringify(data, null, 2);
+}
+
+async function getMe() {
+
+  const res = await fetch(`${api}/api/me`, {
+    credentials: "include"
+  });
+
+  const data = await res.json();
+  show(data);
+}
+
+async function createProject() {
+
+  const name = document.getElementById("projectName").value;
+
+  const res = await fetch(`${api}/api/projects`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: name,
+      organizationId: "00000000-0000-0000-0000-000000000001"
+    })
+  });
+
+  show(await res.json());
+}
+
+async function createTask() {
+
+  const projectId = document.getElementById("taskProjectId").value;
+  const title = document.getElementById("taskTitle").value;
+
+  const res = await fetch(`${api}/api/tasks`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      projectId,
+      title
+    })
+  });
+
+  show(await res.json());
+}
+
+async function getTasks() {
+
+  const projectId = document.getElementById("tasksProjectId").value;
+
+  const res = await fetch(`${api}/api/tasks/${projectId}`, {
+    credentials: "include"
+  });
+
+  show(await res.json());
+}
+
+    </script>
+
+</body>
+</html>

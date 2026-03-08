@@ -1,5 +1,7 @@
 ﻿using Backend.Api.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Security.Claims;
 
 namespace Backend.Api.Middleware
 {
@@ -16,8 +18,8 @@ namespace Backend.Api.Middleware
         {
             if(context.User.Identity?.IsAuthenticated == true)
             {
-                var sub = context.User.FindFirst("sub")?.Value;
-                var email = context.User.FindFirst("email")?.Value;
+                var sub = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var email = context.User.FindFirst(ClaimTypes.Email)?.Value;
                 var name = context.User.FindFirst("name")?.Value;
 
                 if(sub != null)
@@ -37,10 +39,10 @@ namespace Backend.Api.Middleware
                             Email = email,
                             OidcSub = sub,
                         };
-                    }
 
-                    appDbContext.Users.Add(user);
-                    await appDbContext.SaveChangesAsync();
+                        appDbContext.Users.Add(user);
+                        await appDbContext.SaveChangesAsync();
+                    }
                 }
             }
             await _next(context);

@@ -41,6 +41,21 @@ builder.Services.AddReverseProxy()
 
 var app = builder.Build();
 
-app.MapReverseProxy().RequireAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapGet("/", () =>
+{
+    return Results.Redirect("/index.html");
+}).RequireAuthorization();
+
+app.MapGet("/logout", async (HttpContext ctx) =>
+{
+    await ctx.SignOutAsync("Cookies");
+    await ctx.SignOutAsync("OpenIdConnect");
+});
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+app.MapReverseProxy();
 
 app.Run();
