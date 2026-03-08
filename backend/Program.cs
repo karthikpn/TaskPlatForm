@@ -25,8 +25,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<Backend.Api.Middleware.UserProvisioningMiddleware>();
-
+app.UseMiddleware<TenantMiddleware>();
 app.MapGet("/api/health", () => "Hello from health").RequireAuthorization();
 app.MapControllers();
+
+/*using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DbSeeder.SeedAsync(db);
+}*/
 
 app.Run();
